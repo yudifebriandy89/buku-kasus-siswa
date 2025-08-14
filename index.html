@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Buku Kasus Siswa</title>
+  <meta name="description" content="Buku Kasus Siswa – versi interaktif untuk dokumentasi, rekap, dan publikasi via Linktree." />
+  <style>
+    :root {
+      --bg: #0f172a;            /* slate-900 */
+      --panel: #111827;         /* gray-900 */
+      --muted: #1f2937;         /* gray-800 */
+      --ink: #e5e7eb;           /* gray-200 */
+      --ink-dim: #9ca3af;       /* gray-400 */
+      --brand: #22c55e;         /* green-500 */
+      --brand-ink: #052e16;     /* green-950 */
+      --warn: #f59e0b;          /* amber-500 */
+      --danger: #ef4444;        /* red-500 */
+      --ok: #10b981;            /* emerald-500 */
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: linear-gradient(140deg, #0b1220 0%, #0f172a 60%, #0b1220 100%);
+      color: var(--ink);
+    }
+    .container { max-width: 1120px; margin: 28px auto; padding: 0 16px; }
+    .header {
+      display: grid; gap: 12px; grid-template-columns: 1fr; align-items: center; margin-bottom: 18px;
+    }
+    .title {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .logo {
+      width: 44px; height: 44px; border-radius: 12px; background: radial-gradient(circle at 30% 30%, #4ade80, #22c55e 50%, #15803d);
+      box-shadow: var(--shadow);
+    }
+    h1 { font-size: 1.6rem; margin: 0; letter-spacing: .2px; }
+    .subtitle { margin: 0; color: var(--ink-dim); font-size: .95rem; }
+
+    .toolbar {
+      background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); padding: 12px; border-radius: var(--radius);
+      display: grid; gap: 10px; grid-template-columns: 1fr; box-shadow: var(--shadow);
+    }
+    .row { display: grid; gap: 10px; grid-template-columns: 1fr; }
+    .row.cols-4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+    .row.cols-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .row.cols-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+
+    @media (min-width: 840px) {
+      .header { grid-template-columns: 1fr auto; }
+      .toolbar .row.stack-md { grid-template-columns: repeat(4, minmax(0,1fr)); }
+    }
+
+    input, select, textarea, button {
+      width: 100%; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,.08);
+      background: #0b1324; color: var(--ink); outline: none; transition: border .2s, background .2s;
+    }
+    input::placeholder, textarea::placeholder { color: #64748b; }
+    input:focus, select:focus, textarea:focus { border-color: #22c55e; background: #0a142a; }
+    button { cursor: pointer; font-weight: 600; }
+    .btn-primary { background: linear-gradient(180deg, #22c55e, #16a34a); color: #052e16; border: none; }
+    .btn-outline { background: transparent; border: 1px solid #334155; color: var(--ink); }
+    .btn-danger { background: #ef4444; border: none; }
+    .btn-ghost { background: transparent; border: 1px dashed #334155; color: var(--ink-dim); }
+    .btn-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .panel { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); padding: 14px; border-radius: var(--radius); box-shadow: var(--shadow); }
+
+    .stats { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0,1fr)); margin: 18px 0; }
+    @media (min-width: 700px) { .stats { grid-template-columns: repeat(4, minmax(0,1fr)); } }
+    .stat { background: #0b1324; border: 1px solid rgba(255,255,255,.06); border-radius: 14px; padding: 12px; }
+    .stat .k { font-size: 1.4rem; font-weight: 800; }
+    .stat .l { color: var(--ink-dim); font-size: .85rem; }
+
+    .table-wrap { overflow: auto; border-radius: 14px; border: 1px solid rgba(255,255,255,.06); }
+    table { width: 100%; border-collapse: collapse; background: #0b1324; }
+    thead th { position: sticky; top: 0; background: #0f1a34; color: #cbd5e1; text-align: left; padding: 10px; font-size: .9rem; border-bottom: 1px solid rgba(255,255,255,.06); }
+    tbody td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,.06); vertical-align: top; }
+    tbody tr:hover { background: rgba(34,197,94,.06); }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 999px; font-size: .75rem; font-weight: 700; }
+    .b-proses { background: rgba(245, 158, 11, .15); color: #f8d98a; border: 1px solid rgba(245, 158, 11, .25); }
+    .b-selesai { background: rgba(16, 185, 129, .15); color: #9cf3cf; border: 1px solid rgba(16, 185, 129, .25); }
+
+    .grid { display: grid; gap: 10px; }
+
+    dialog::backdrop { background: rgba(0,0,0,.6); backdrop-filter: blur(2px); }
+    dialog { border: none; border-radius: 16px; background: #0b1324; color: var(--ink); max-width: 800px; width: 96vw; }
+
+    .footer { color: #94a3b8; font-size: .85rem; text-align: center; margin-top: 18px; }
+
+    /* Print */
+    @media print {
+      body { background: white; color: black; }
+      .toolbar, .btn-wrap, .footer { display:none !important; }
+      .panel, .table-wrap, .stat { border: 1px solid #222 !important; box-shadow: none; }
+      thead th { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Buku Kasus Siswa</h1>
+          <p class="subtitle">Dokumentasi kasus/tugas, tindak lanjut, dan rekap—siap dipublikasikan melalui Linktree.</p>
+        </div>
+      </div>
+      <div class="btn-wrap">
+        <button class="btn-primary" id="btnTambah">+ Kasus Baru</button>
+        <button class="btn-outline" id="btnImpor">Impor JSON</button>
+        <button class="btn-outline" id="btnEkspor">Ekspor JSON</button>
+        <button class="btn-outline" id="btnCSV">Ekspor CSV</button>
+        <button class="btn-outline" onclick="window.print()">Cetak / PDF</button>
+      </div>
+    </div>
+
+    <div class="toolbar panel">
+      <div class="row stack-md">
+        <input id="q" type="search" placeholder="Cari nama siswa / deskripsi / tindakan..." />
+        <select id="fKelas">
+          <option value="">Semua Kelas</option>
+          <option>XI RPL 1</option>
+          <option>XI RPL 2</option>
+          <option>XI TKJ 1</option>
+          <option>XI TKJ 2</option>
+        </select>
+        <select id="fStatus">
+          <option value="">Semua Status</option>
+          <option value="Proses">Proses</option>
+          <option value="Selesai">Selesai</option>
+        </select>
+        <select id="fKategori">
+          <option value="">Semua Kategori</option>
+          <option>Disiplin</option>
+          <option>Akademik</option>
+          <option>Perilaku</option>
+          <option>Administrasi</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="k" id="sTotal">0</div><div class="l">Total Kasus</div></div>
+      <div class="stat"><div class="k" id="sProses">0</div><div class="l">Status Proses</div></div>
+      <div class="stat"><div class="k" id="sSelesai">0</div><div class="l">Status Selesai</div></div>
+      <div class="stat"><div class="k" id="sKelas">0</div><div class="l">Kelas Terfilter</div></div>
+    </div>
+
+    <div class="panel table-wrap">
+      <table id="tKasus">
+        <thead>
+          <tr>
+            <th style="width:56px">No</th>
+            <th>Nama Siswa</th>
+            <th>Kelas</th>
+            <th>Tanggal</th>
+            <th>Kategori</th>
+            <th>Kasus</th>
+            <th>Tindakan</th>
+            <th>Status</th>
+            <th>Petugas</th>
+            <th style="width:110px">Aksi</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <p class="footer">Data disimpan di <strong>perangkat ini (localStorage)</strong>. Untuk publikasi, gunakan tombol <em>Ekspor</em> lalu unggah berkas ke hosting Anda (GitHub Pages/Netlify) atau bagikan tautan halaman ini melalui Linktree.</p>
+  </div>
+
+  <!-- Dialog Form -->
+  <dialog id="dlg">
+    <form id="frm" method="dialog" style="padding:16px;">
+      <h3 style="margin-top:0">Form Kasus Siswa</h3>
+      <div class="grid" style="grid-template-columns: 1fr 1fr;">
+        <div>
+          <label>Nama Siswa
+            <input name="nama" required placeholder="Contoh: Andi Putra" />
+          </label>
+        </div>
+        <div>
+          <label>Kelas
+            <input name="kelas" required placeholder="Contoh: XI RPL 1" />
+          </label>
+        </div>
+        <div>
+          <label>Tanggal
+            <input name="tanggal" type="date" required />
+          </label>
+        </div>
+        <div>
+          <label>Kategori
+            <select name="kategori" required>
+              <option value="">Pilih…</option>
+              <option>Disiplin</option>
+              <option>Akademik</option>
+              <option>Perilaku</option>
+              <option>Administrasi</option>
+            </select>
+          </label>
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label>Deskripsi Kasus
+            <textarea name="deskripsi" rows="3" placeholder="Ringkas & jelas"></textarea>
+          </label>
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label>Tindakan / Solusi
+            <textarea name="tindakan" rows="3" placeholder="Pembinaan, panggilan orang tua, bimbingan, dll"></textarea>
+          </label>
+        </div>
+        <div>
+          <label>Status
+            <select name="status" required>
+              <option>Proses</option>
+              <option>Selesai</option>
+            </select>
+          </label>
+        </div>
+        <div>
+          <label>Petugas / Guru
+            <input name="petugas" placeholder="Nama guru/pembina" />
+          </label>
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label>URL Bukti (opsional)
+            <input name="bukti" type="url" placeholder="https://drive.google.com/…" />
+          </label>
+        </div>
+      </div>
+      <div class="btn-wrap" style="margin-top:12px; justify-content: flex-end;">
+        <button class="btn-ghost" value="cancel">Batal</button>
+        <button class="btn-primary" id="btnSimpan" value="confirm">Simpan</button>
+      </div>
+      <input type="hidden" name="id" />
+    </form>
+  </dialog>
+
+  <script>
+    // ===== Util sederhana =====
+    const $ = (sel, el=document) => el.querySelector(sel);
+    const $$ = (sel, el=document) => [...el.querySelectorAll(sel)];
+    const storeKey = 'buku_kasus_siswa_v1';
+
+    function uid() { return Math.random().toString(36).slice(2) + Date.now().toString(36); }
+    function loadData() {
+      try { return JSON.parse(localStorage.getItem(storeKey) || '[]'); } catch { return []; }
+    }
+    function saveData(list) { localStorage.setItem(storeKey, JSON.stringify(list)); }
+
+    let data = loadData();
+
+    // Seed contoh bila kosong
+    if (!data.length) {
+      data = [
+        { id: uid(), nama: 'Andi Putra', kelas: 'XI RPL 1', tanggal: new Date().toISOString().slice(0,10), kategori: 'Disiplin', deskripsi: 'Terlambat masuk 20 menit.', tindakan: 'Pembinaan & surat peringatan 1', status: 'Selesai', petugas: 'Bu Rina', bukti: '' },
+        { id: uid(), nama: 'Siti Rahma', kelas: 'XI RPL 2', tanggal: new Date().toISOString().slice(0,10), kategori: 'Akademik', deskripsi: 'Tidak mengumpulkan tugas minggu ini.', tindakan: 'Pendampingan belajar', status: 'Proses', petugas: 'Pak Budi', bukti: '' },
+      ];
+      saveData(data);
+    }
+
+    // ===== Render =====
+    const tbody = $('#tKasus tbody');
+    const q = $('#q');
+    const fKelas = $('#fKelas');
+    const fStatus = $('#fStatus');
+    const fKategori = $('#fKategori');
+
+    function humanDate(s) {
+      if (!s) return '-';
+      const d = new Date(s + 'T00:00:00');
+      return d.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' });
+    }
+
+    function matches(item) {
+      const text = (q.value || '').toLowerCase();
+      const inText = (v) => (v||'').toLowerCase().includes(text);
+      const okQ = !text || [item.nama, item.deskripsi, item.tindakan, item.petugas, item.kelas].some(inText);
+      const okKelas = !fKelas.value || item.kelas === fKelas.value;
+      const okStatus = !fStatus.value || item.status === fStatus.value;
+      const okKat = !fKategori.value || item.kategori === fKategori.value;
+      return okQ && okKelas && okStatus && okKat;
+    }
+
+    function render() {
+      const rows = data.filter(matches);
+      tbody.innerHTML = rows.map((x, i) => `
+        <tr>
+          <td>${i+1}</td>
+          <td>${esc(x.nama)}</td>
+          <td>${esc(x.kelas)}</td>
+          <td>${humanDate(x.tanggal)}</td>
+          <td>${esc(x.kategori)}</td>
+          <td>${esc(x.deskripsi)}</td>
+          <td>${esc(x.tindakan)}</td>
+          <td>${badge(x.status)}</td>
+          <td>${esc(x.petugas||'-')}</td>
+          <td>
+            <div class="btn-wrap">
+              <button class="btn-outline" onclick="editKasus('${x.id}')">Edit</button>
+              <button class="btn-danger" onclick="hapusKasus('${x.id}')">Hapus</button>
+            </div>
+          </td>
+        </tr>`).join('');
+
+      $('#sTotal').textContent = data.length;
+      $('#sProses').textContent = data.filter(d=>d.status==='Proses').length;
+      $('#sSelesai').textContent = data.filter(d=>d.status==='Selesai').length;
+      const kelas = new Set(rows.map(r=>r.kelas));
+      $('#sKelas').textContent = kelas.size;
+    }
+
+    function esc(s){ return (s||'').replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m])); }
+    function badge(status){
+      const cls = status === 'Selesai' ? 'b-selesai' : 'b-proses';
+      return `<span class="badge ${cls}">${esc(status)}</span>`;
+    }
+
+    // ===== CRUD =====
+    const dlg = $('#dlg');
+    const frm = $('#frm');
+
+    $('#btnTambah').addEventListener('click', () => openForm());
+    frm.addEventListener('submit', (e) => e.preventDefault());
+    $('#btnSimpan').addEventListener('click', onSave);
+
+    function openForm(item){
+      frm.reset();
+      frm.id.value = item?.id || '';
+      frm.nama.value = item?.nama || '';
+      frm.kelas.value = item?.kelas || '';
+      frm.tanggal.value = item?.tanggal || new Date().toISOString().slice(0,10);
+      frm.kategori.value = item?.kategori || '';
+      frm.deskripsi.value = item?.deskripsi || '';
+      frm.tindakan.value = item?.tindakan || '';
+      frm.status.value = item?.status || 'Proses';
+      frm.petugas.value = item?.petugas || '';
+      frm.bukti.value = item?.bukti || '';
+      dlg.showModal();
+    }
+
+    function onSave(){
+      const obj = Object.fromEntries(new FormData(frm).entries());
+      if(!obj.nama || !obj.kelas || !obj.tanggal || !obj.kategori){ alert('Lengkapi data wajib.'); return; }
+      obj.id = obj.id || uid();
+      const idx = data.findIndex(d=>d.id===obj.id);
+      if(idx>=0) data[idx] = obj; else data.push(obj);
+      saveData(data); render(); dlg.close();
+    }
+
+    window.editKasus = (id) => {
+      const item = data.find(d=>d.id===id); if(!item) return;
+      openForm(item);
+    };
+    window.hapusKasus = (id) => {
+      const item = data.find(d=>d.id===id); if(!item) return;
+      if(confirm(`Hapus kasus ${item.nama}?`)) {
+        data = data.filter(d=>d.id!==id); saveData(data); render();
+      }
+    };
+
+    // ===== Filter =====
+    [q, fKelas, fStatus, fKategori].forEach(el=> el.addEventListener('input', render));
+
+    // ===== Impor/Ekspor =====
+    $('#btnEkspor').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'buku-kasus.json'; a.click();
+    });
+
+    $('#btnCSV').addEventListener('click', () => {
+      const cols = ['nama','kelas','tanggal','kategori','deskripsi','tindakan','status','petugas','bukti'];
+      const head = cols.join(',');
+      const lines = data.map(r => cols.map(c => csvCell(r[c])).join(','));
+      const csv = [head, ...lines].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'buku-kasus.csv'; a.click();
+    });
+    function csvCell(v){
+      if(v==null) return '';
+      const s = String(v).replaceAll('"','""');
+      return /[",\n]/.test(s) ? `"${s}"` : s;
+    }
+
+    $('#btnImpor').addEventListener('click', () => {
+      const inp = document.createElement('input'); inp.type='file'; inp.accept='.json,application/json';
+      inp.onchange = async () => {
+        const file = inp.files?.[0]; if(!file) return;
+        try {
+          const text = await file.text();
+          const obj = JSON.parse(text);
+          if(!Array.isArray(obj)) throw new Error('Format tidak valid');
+          // normalisasi id
+          obj.forEach(o=>{ if(!o.id) o.id = uid(); });
+          data = obj; saveData(data); render();
+        } catch(err){ alert('Gagal impor: '+ err.message); }
+      };
+      inp.click();
+    });
+
+    // ===== Init =====
+    render();
+  </script>
+</body>
+</html>
